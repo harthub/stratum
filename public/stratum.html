@@ -1431,7 +1431,7 @@
         <button class="chart-tab" onclick="switchChart('price',this)">Price Outlook</button>
       </div>
     </div>
-    <canvas id="mainChart" height="280"></canvas>
+    <div style="position:relative;height:320px;width:100%;"><canvas id="mainChart"></canvas></div>
   </div>
 </section>
 
@@ -2041,6 +2041,7 @@ function buildChart(type) {
     data: d,
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: {
@@ -2241,6 +2242,7 @@ async function buildEquityChart() {
     data: { labels, datasets },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { labels: { color: '#7a7468', font: { family: "'IBM Plex Mono', monospace", size: 10 }, boxWidth: 20 } },
