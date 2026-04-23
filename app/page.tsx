@@ -1,4 +1,5 @@
-// Served via rewrite in next.config.js → /stratum.html
+import { redirect } from 'next/navigation'
+
 export default function Home() {
-  return null
+  redirect('/stratum')
 }
