@@ -1168,7 +1168,7 @@
 <nav>
   <div class="nav-logo">STRA<span>T</span>UM</div>
   <div class="nav-right">
-    <div class="nav-tag">V1 · RESEARCH TOOL</div>
+    <div class="nav-tag">V1.6 · RESEARCH TOOL</div>
     <button class="nav-hamburger" id="navHamburger" onclick="toggleNav()" aria-label="Menu">
       <span class="ham-line"></span>
       <span class="ham-line"></span>
@@ -1801,14 +1801,6 @@
       <div style="display:flex;flex-direction:column;gap:12px;" id="sourcesMethods"></div>
     </div>
   </div>
-  <div style="padding:24px 48px;background:var(--bg2);display:flex;justify-content:space-between;align-items:center;">
-    <div style="font-size:9px;color:var(--text-muted);font-family:var(--sans);letter-spacing:0.06em;">
-      Built for educational and research purposes · DePaul University Finance · 2026
-    </div>
-    <div style="font-size:9px;color:var(--text-muted);letter-spacing:0.1em;border:1px solid var(--border);padding:6px 12px;">
-      NOT FINANCIAL ADVICE
-    </div>
-  </div>
 </section>
 
 <!-- THESIS SECTION — FINAL -->
@@ -1886,9 +1878,9 @@
 <footer>
   <div class="footer-logo">STRA<span>T</span>UM</div>
   <div class="footer-note">
-    STRATUM v1 · Critical Minerals & AI Infrastructure Research Tool ·
+    STRATUM V1.6 · Critical Minerals & AI Infrastructure Research Tool ·
     Built by <a href="https://www.linkedin.com/in/izak-trevino/" target="_blank" rel="noopener" style="color:var(--accent-gold);text-decoration:none;" onmouseover="this.style.opacity=0.7" onmouseout="this.style.opacity=1">Izak Trevino ↗</a>
-    · DePaul University Finance 2026 · Sources: IEA, USGS, WEF, S&P Global, Wood Mackenzie, FP Analytics · Not financial advice.
+    · DePaul University Finance Student 2026 · Sources: IEA, USGS, WEF, S&P Global, Wood Mackenzie, FP Analytics · Not financial advice.
   </div>
 </footer>
 
@@ -2604,12 +2596,11 @@ const SOURCES_PRIMARY = [
 ];
 
 const SOURCES_MARKET = [
-  { name: 'LME (London Metal Exchange)', url: 'https://lme.com', desc: 'Copper, aluminum, nickel, tin spot and futures prices' },
-  { name: 'COMEX / CME Group', url: 'https://cmegroup.com', desc: 'Gold, silver, palladium, platinum futures data' },
-  { name: 'Metals-API', url: 'https://metals-api.com', desc: 'Live precious metals pricing feed (integration target)' },
-  { name: 'Alpha Vantage', url: 'https://alphavantage.co', desc: 'Equity price data for mining stocks and ETFs' },
-  { name: 'ExchangeRate-API', url: 'https://exchangerate-api.com', desc: 'Commodity FX pair rates (AUD/USD, USD/CLP, USD/ZAR)' },
-  { name: 'Yahoo Finance / Polygon.io', url: 'https://polygon.io', desc: 'Equity screening, ETF holdings, market cap data' },
+  { name: 'Yahoo Finance (yahoo-finance2)', url: 'https://finance.yahoo.com', desc: 'Live equity prices for mining stocks, ETFs, hyperscalers, and commodity futures (GC=F, SI=F, HG=F, PA=F, PL=F, ALI=F)' },
+  { name: 'Frankfurter / ECB', url: 'https://www.frankfurter.app', desc: 'Live forex rates — AUD/USD, USD/ZAR via European Central Bank data' },
+  { name: 'open.er-api.com', url: 'https://www.exchangerate-api.com', desc: 'Live forex rates — USD/CLP, USD/PEN (emerging market pairs)' },
+  { name: 'LME (London Metal Exchange)', url: 'https://lme.com', desc: 'Nickel and tin reference settlement prices' },
+  { name: 'COMEX / CME Group', url: 'https://cmegroup.com', desc: 'Gold, silver, palladium, platinum, copper futures — accessed via Yahoo Finance' },
 ];
 
 const SOURCES_METHODS = [
