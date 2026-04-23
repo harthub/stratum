@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 
+// Frankfurter uses EUR as base — we fetch each pair individually
 const FX_PAIRS = [
   {
     pair: 'AUD/USD', from: 'AUD', to: 'USD',
@@ -23,43 +24,33 @@ const FX_PAIRS = [
   },
 ]
 
+async function fetchRate(from: string, to: string): Promise<number> {
+  const res = await fetch(`https://api.frankfurter.app/latest?from=${from}&to=${to}`)
+  if (!res.ok) throw new Error(`Frankfurter ${from}/${to} failed: ${res.status}`)
+  const data = await res.json()
+  const rate = data.rates?.[to]
+  if (!rate) throw new Error(`No rate found for ${from}/${to}`)
+  return rate
+}
+
 export async function GET() {
   try {
-    // Frankfurter is a free, no-auth-required ECB exchange rate API
-    const symbols = 'AUD,CLP,ZAR,PEN'
-    const res = await fetch(
-      `https://api.frankfurter.app/latest?from=USD&to=${symbols}`,
-      { next: { revalidate: 300 } }
+    const results = await Promise.allSettled(
+      FX_PAIRS.map(fx => fetchRate(fx.from, fx.to))
     )
 
-    if (!res.ok) throw new Error(`Frankfurter error: ${res.status}`)
-    const data = await res.json()
-    const rates = data.rates // { AUD: x, CLP: x, ZAR: x, PEN: x }
-
-    const pairs = FX_PAIRS.map(fx => {
-      let rate: number
-
-      if (fx.from === 'USD') {
-        rate = rates[fx.to]
-      } else {
-        // AUD/USD = 1 / (USD/AUD rate)
-        rate = 1 / rates[fx.from]
+    const pairs = FX_PAIRS.map((fx, i) => {
+      const result = results[i]
+      if (result.status === 'fulfilled') {
+        const rate = result.value
+        const formatted = rate < 10
+          ? rate.toFixed(4)
+          : rate < 1000
+            ? rate.toFixed(2)
+            : rate.toFixed(0)
+        return { ...fx, rate: parseFloat(formatted), rateDisplay: formatted, chg: 0, live: true }
       }
-
-      const formatted = rate < 10
-        ? rate.toFixed(4)
-        : rate < 1000
-          ? rate.toFixed(2)
-          : rate.toFixed(0)
-
-      return {
-        ...fx,
-        rate: parseFloat(formatted),
-        rateDisplay: formatted,
-        chg: 0, // Frankfurter doesn't provide change %, keep at 0
-        timestamp: Date.now(),
-        live: true,
-      }
+      return { ...fx, rate: null, rateDisplay: '—', chg: 0, live: false }
     })
 
     return NextResponse.json({
