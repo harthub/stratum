@@ -1214,8 +1214,8 @@
         <span class="stat-label">of 2035 copper demand met by existing mines (IEA)</span>
       </div>
       <div class="stat-box">
-        <span class="stat-value">2.5M</span>
-        <span class="stat-label">metric tons copper/yr for data centers by 2040 (S&P)</span>
+        <span class="stat-value">42M</span>
+        <span class="stat-label">metric tons of global copper demand by 2040 — 50% above today (S&P Global)</span>
       </div>
       <div class="stat-box">
         <span class="stat-value">100GW</span>
@@ -1223,7 +1223,7 @@
       </div>
       <div class="stat-box">
         <span class="stat-value">17yr</span>
-        <span class="stat-label">avg. timeline from mine discovery to production</span>
+        <span class="stat-label">avg. years from mine discovery to production (S&P Global 2026)</span>
       </div>
     </div>
   </div>
@@ -1838,7 +1838,7 @@
       </p>
 
       <p class="thesis-p">
-        The mining equity opportunity is concentrated in companies with <strong>permitted assets in late-stage development</strong> — those that can bypass the 17-year average mine-to-production timeline. Junior miners with copper, gallium, or germanium exposure at advanced project stages are receiving valuation premiums that reflect the structural supply gap rather than near-term production. The IPO pipeline in this space is the most active since the rare earth cycle of 2010–2012.
+        Meeting the supply gap requires more than 8 Mtpa of new mine capacity — averaging 880 ktpa of new mines per year through 2035 — at a cost exceeding $210 billion (Wood Mackenzie). China has already moved: it commanded ~50% of global copper project financing between 2019 and 2025. Western firms, constrained by ESG pressures and investor risk aversion, have favored M&A over greenfield development. The mining equity opportunity is concentrated in companies with <strong>permitted assets in late-stage development</strong> — those that can bypass the 17-year average mine-to-production timeline. Junior miners with copper, gallium, or germanium exposure at advanced project stages are receiving valuation premiums that reflect the structural supply gap rather than near-term production. The IPO pipeline in this space is the most active since the rare earth cycle of 2010–2012.
       </p>
     </div>
 
@@ -1999,7 +1999,7 @@ const chartDatasets = {
   supply: {
     labels: ['2025','2026','2027','2028','2029','2030','2031','2032','2033','2034','2035'],
     datasets: [
-      { label: 'Copper Demand (M tonnes)', data: [1.1,1.3,1.5,1.75,1.9,2.1,2.2,2.25,2.3,2.35,2.4], borderColor: '#b87333', tension: 0.4 },
+      { label: 'Data Center Copper Demand (M tonnes)', data: [1.1,1.3,1.5,1.75,1.9,2.1,2.2,2.25,2.3,2.35,2.4], borderColor: '#b87333', tension: 0.4 },
       { label: 'Copper Supply (M tonnes)', data: [1.05,1.1,1.18,1.25,1.3,1.38,1.45,1.5,1.56,1.6,1.65], borderColor: '#c94c4c', tension: 0.4, borderDash: [6,3] },
     ]
   },
@@ -2066,7 +2066,7 @@ function buildChart(type) {
           ticks: { color: '#4a4642', font: { family: "'IBM Plex Mono', monospace", size: 9 } }
         },
         y: {
-          min: 0,
+          min: type === 'demand' ? 0 : undefined,
           grid: { color: '#1a1a1a' },
           ticks: { color: '#4a4642', font: { family: "'IBM Plex Mono', monospace", size: 9 } }
         }
@@ -2263,11 +2263,11 @@ async function buildEquityChart() {
 // ─── GEOPOLITICAL DATA ───────────────────────────────────
 
 const CHINA_MATRIX = [
-  { mineral: 'Gallium',     sym: 'Ga', mine: 98,  refine: 98,  level: 'total',   color: '#c94c8e', note: 'Export restrictions enacted 2023. ~98% global primary production.' },
+  { mineral: 'Gallium',     sym: 'Ga', mine: 98,  refine: 98,  level: 'total',   color: '#c94c8e', note: 'Export restrictions enacted 2023. ~98% global primary production. A 30% supply disruption would reduce US GDP by ~$600B (USGS via FP Analytics). Gallium prices outside China doubled within 5 months of late 2024 restrictions.' },
   { mineral: 'Dysprosium',  sym: 'Dy', mine: 99,  refine: 99,  level: 'total',   color: '#a060c0', note: 'Near-total monopoly on heavy rare earth mining AND processing. No substitutes.' },
   { mineral: 'Fluorspar',   sym: 'F',  mine: 62,  refine: 78,  level: 'total',   color: '#c0c060', note: 'Dominates both mine output and HF acid production. 100% US import reliance.' },
-  { mineral: 'Germanium',   sym: 'Ge', mine: 60,  refine: 95,  level: 'total',   color: '#c9844c', note: 'Export controls July 2023. Refining dominance far exceeds mining share.' },
-  { mineral: 'Neodymium',   sym: 'Nd', mine: 85,  refine: 92,  level: 'total',   color: '#c060a0', note: 'Dominates full rare earth supply chain from mine to magnet manufacturing.' },
+  { mineral: 'Germanium',   sym: 'Ge', mine: 60,  refine: 95,  level: 'total',   color: '#c9844c', note: 'Export controls July 2023. China controls ~60% of global germanium refining. Demand projected +37% by 2033 on AI chip scaling (FP Analytics).' },
+  { mineral: 'Neodymium',   sym: 'Nd', mine: 85,  refine: 92,  level: 'total',   color: '#c060a0', note: 'China accounts for ~70% of global REE production and ~90% of global REE processing. June 2025: new export licensing rules require end-use disclosure, restricting US military/tech access (FP Analytics).' },
   { mineral: 'Arsenic',     sym: 'As', mine: 72,  refine: 80,  level: 'total',   color: '#c07060', note: '100% US import dependent. GaAs chip supply entirely China-origin.' },
   { mineral: 'Indium',      sym: 'In', mine: 58,  refine: 75,  level: 'choke',   color: '#70a080', note: 'Byproduct of zinc; refining concentrated in China even when zinc mined elsewhere.' },
   { mineral: 'Tin',         sym: 'Sn', mine: 31,  refine: 68,  level: 'choke',   color: '#a09070', note: 'Smelting/refining dominance creates chokepoint despite diverse mine production.' },
@@ -2275,7 +2275,7 @@ const CHINA_MATRIX = [
   { mineral: 'Lithium',     sym: 'Li', mine: 24,  refine: 65,  level: 'choke',   color: '#a8c44c', note: 'Australia & Chile mine it; China processes most of it into battery-grade material.' },
   { mineral: 'Silicon',     sym: 'Si', mine: 68,  refine: 68,  level: 'elevated',color: '#4c8ec9', note: 'Dominant in metallurgical silicon. Semiconductor-grade production more diversified.' },
   { mineral: 'Aluminum',    sym: 'Al', mine: 55,  refine: 57,  level: 'elevated',color: '#909098', note: 'Largest global producer but meaningful capacity in Russia, Canada, Australia.' },
-  { mineral: 'Copper',      sym: 'Cu', mine: 8,   refine: 42,  level: 'elevated',color: '#b87333', note: 'Mining diversified (Chile dominant). Refining elevated but not monopoly.' },
+  { mineral: 'Copper',      sym: 'Cu', mine: 8,   refine: 42,  level: 'elevated',color: '#b87333', note: 'Mining diversified (Chile dominant). China commanded ~50% of global copper project finance 2019-25 ($76B total), cementing supply chain control despite not mining dominance (Wood Mackenzie).' },
   { mineral: 'Silver',      sym: 'Ag', mine: 14,  refine: 18,  level: 'low',     color: '#a8a8b0', note: 'Mexico & Peru lead mining. Refining relatively diversified globally.' },
   { mineral: 'Gold',        sym: 'Au', mine: 11,  refine: 8,   level: 'low',     color: '#c9a84c', note: 'Most geopolitically diversified critical mineral. Multiple major allied producers.' },
   { mineral: 'Palladium',   sym: 'Pd', mine: 4,   refine: 5,   level: 'other',   color: '#b8a0d0', note: 'Russia (40%) and South Africa (38%) dominate. Different geopolitical risk vector.' },
@@ -2530,10 +2530,10 @@ function buildNationScorecard() {
 // ─── NEWS DATA ───────────────────────────────────────────
 const NEWS = [
   { date: 'Apr 2026', tag: 'SUPPLY', tagColor: '#c94c4c', url: 'https://www.lme.com/en/metals/non-ferrous/lme-copper', headline: 'Copper hits fresh record above $11,700/t on LME as AI capex surge absorbs available supply', body: 'Hyperscaler construction activity across the US, Europe, and Southeast Asia is consuming copper at a pace that has overwhelmed the 2025 procurement pipeline. Analysts at JPMorgan now target $12,500/t by Q2 2026.', source: 'LME / JPMorgan Research' },
-  { date: 'Mar 2026', tag: 'GEOPOLITICS', tagColor: '#c98c4c', url: 'https://www.reuters.com/markets/commodities/', headline: 'China expands rare earth export controls to include processed neodymium compounds', body: 'Beijing broadened its 2023 gallium/germanium playbook to cover processed NdFeB precursors, targeting the magnet supply chain used in EV motors and data center cooling fans. MP Materials shares surged 18% on the news.', source: 'Reuters / S&P Global' },
+  { date: 'Mar 2026', tag: 'GEOPOLITICS', tagColor: '#c98c4c', url: 'https://www.reuters.com/markets/commodities/', headline: 'China expands rare earth export controls to include processed neodymium compounds', body: 'Beijing broadened its 2023 gallium/germanium playbook — which doubled gallium prices outside China within 5 months — to cover processed NdFeB precursors. China controls ~90% of global REE processing. MP Materials shares surged 18% on the news.', source: 'Reuters / FP Analytics' },
   { date: 'Mar 2026', tag: 'MINING IPO', tagColor: '#4caf78', url: 'https://www.arizonasonoran.com', headline: 'Arizona Sonoran secures $240M financing package for ARIS copper project pre-feasibility', body: 'The domestic US copper developer closed a strategic financing round backed by a consortium including a major semiconductor manufacturer seeking direct copper offtake. Signals tech sector\'s move to bypass commodity markets.', source: 'Mining Journal / Company Filing' },
   { date: 'Feb 2026', tag: 'POLICY', tagColor: '#4c8ec9', url: 'https://www.usgs.gov/centers/national-minerals-information-center/mineral-commodity-summaries', headline: 'USGS adds copper to critical minerals list; triggers expedited permitting under CHIPS Act', body: 'The formal designation of copper as a critical mineral unlocks federal support for domestic mining projects, potentially compressing the 17-year average development timeline for advanced-stage US copper assets.', source: 'USGS Mineral Commodity Summaries 2025' },
-  { date: 'Jan 2026', tag: 'SUPPLY RISK', tagColor: '#c94c4c', url: 'https://www.spglobal.com/commodityinsights/en/market-insights/latest-news/metals/copper', headline: 'S&P Global warns of "systemic risk" as copper shortfall could hit 10M tonnes by 2040', body: 'A landmark S&P Global study projects data center copper demand rising from 1.1M to 2.5M metric tons by 2040, with AI training facilities accounting for 58% of total data center copper consumption by 2030.', source: 'S&P Global Commodity Insights' },
+  { date: 'Jan 2026', tag: 'SUPPLY RISK', tagColor: '#c94c4c', url: 'https://press.spglobal.com/2026-01-08-Substantial-Shortfall-in-Copper-Supply-Widens-as-the-Race-for-AI-and-Growing-Defense-Spending-Add-to-Accelerating-Demand,-New-S-P-Global-Study-Finds', headline: 'S&P Global: copper supply deficit to hit 10M tonnes by 2040 as AI and defense spending add to demand surge', body: 'S&P Global's "Copper in the Age of AI" study projects global copper demand rising 50% to 42M metric tons by 2040, with production peaking at 33M metric tons in 2030. The resulting 10M metric ton gap constitutes a "systemic risk for global industries, technological advancement and economic growth."', source: 'S&P Global — Copper in the Age of AI (Jan 2026)' },
   { date: 'Dec 2025', tag: 'MARKETS', tagColor: '#c9a84c', url: 'https://www.usfunds.com/resource/ai-data-centers-could-consume-half-a-million-tons-of-copper-annually-by-2030/', headline: 'Gold, silver, and copper reach simultaneous all-time highs for first time in 45 years', body: 'The convergence of AI hardware demand, safe-haven flows, and solar energy buildout created a rare trifecta. Analysts note that AI\'s dual impact on both industrial and financial commodity demand is structurally new.', source: 'US Funds / Bloomberg' },
   { date: 'Dec 2025', tag: 'INFRASTRUCTURE', tagColor: '#4c8ec9', url: 'https://www.weforum.org/stories/2025/12/securing-data-centre-materials/', headline: 'WEF: Each MW of AI-optimized data center now embeds 85+ tonnes of minerals vs 65t for standard', body: 'The World Economic Forum\'s "Minerals to Megawatts" report documents rising material intensity as AI facilities demand denser rack configurations, heavier cooling, and more robust electrical infrastructure.', source: 'World Economic Forum' },
   { date: 'Oct 2025', tag: 'GEOPOLITICS', tagColor: '#c98c4c', url: 'https://fpanalytics.foreignpolicy.com/2025/07/18/artificial-intelligence-critical-minerals-supply-chains/', headline: 'US-China rare earth standoff intensifies; DoD invests $800M in domestic processing capacity', body: 'The Pentagon\'s critical minerals program expanded direct investment in rare earth separation and processing facilities, targeting gallium, germanium, and heavy rare earth independence from Chinese supply chains.', source: 'FP Analytics / DoD Press Release' },
@@ -2588,27 +2588,29 @@ const HYPERSCALER_STATS = [
 
 // ─── SOURCES DATA ────────────────────────────────────────
 const SOURCES_PRIMARY = [
-  { name: 'IEA Critical Minerals Outlook 2024', url: 'https://iea.org', desc: 'Supply/demand projections, mine coverage gaps, 2035 scenarios' },
-  { name: 'USGS Mineral Commodity Summaries 2025', url: 'https://usgs.gov', desc: 'US import dependency figures, production data, key minerals list' },
-  { name: 'WEF "Minerals to Megawatts" Report 2025', url: 'https://weforum.org', desc: 'Material intensity per MW, data center mineral backbone analysis' },
-  { name: 'S&P Global Copper Systemic Risk Report 2026', url: 'https://spglobal.com', desc: '10Mt deficit projection, data center copper demand to 2040' },
-  { name: 'Wood Mackenzie Copper Market Outlook', url: 'https://woodmac.com', desc: '304,000t 2025 deficit forecast, mine disruption analysis' },
-  { name: 'FP Analytics: AI & Critical Minerals 2025', url: 'https://fpanalytics.foreignpolicy.com', desc: 'Gallium +85%, germanium +37% demand by 2033; China dominance data' },
+  { name: 'IEA Global Critical Minerals Outlook 2024', url: 'https://www.iea.org/reports/global-critical-minerals-outlook-2024', desc: 'Primary source for the 70% copper coverage gap (existing mines vs. 2035 demand), mine supply scenarios, and the 25–40% recycling offset projection by 2050. Covers supply/demand trajectories for 50+ minerals.' },
+  { name: 'USGS Mineral Commodity Summaries 2025', url: 'https://pubs.usgs.gov/publication/mcs2025', desc: 'Source for all US import dependency percentages (100% for Gallium, Arsenic, Fluorspar, Germanium, Indium, Tantalum). Critical minerals list updates, global production and reserve data for 90+ commodities.' },
+  { name: 'WEF "Minerals to Megawatts" Report 2025', url: 'https://reports.weforum.org/docs/WEF_From_Minerals_to_Megawatts_2025.pdf', desc: 'Source for 60–75 tonnes of minerals per MW of AI-optimized data center capacity. Cross-referenced with Microsoft Chicago facility disclosure (2,100t Cu / 80 MW). Calculator intensity figures derived from this report.' },
+  { name: 'S&P Global "Copper in the Age of AI" 2026', url: 'https://press.spglobal.com/2026-01-08-Substantial-Shortfall-in-Copper-Supply-Widens-as-the-Race-for-AI-and-Growing-Defense-Spending-Add-to-Accelerating-Demand,-New-S-P-Global-Study-Finds', desc: 'Source for the 10M metric ton deficit by 2040, 50% demand surge to 42M metric tons, global production peak at 33M metric tons in 2030, and the systemic risk framing. China commands 40% of smelting capacity and 66% of copper concentrate imports.' },
+  { name: 'Wood Mackenzie Copper Market Outlook', url: 'https://www.woodmac.com/press-releases/soaring-copper-demand-an-obstacle-to-future-growth/', desc: 'Total copper demand forecast +24% to 42.7 Mtpa by 2035. Market needs 8 Mtpa of new mine capacity + 3.5 Mtpa from scrap, costing >$210B. New mines must average 880 ktpa/yr — double the rate from a decade ago, representing 28% of projected supply from unbuilt projects. China dominated copper project finance 2019–25 at ~$76B (50%+ of total). Incentive copper price threshold: >$11,000/t for Western investment to accelerate.' },
+  { name: 'FP Analytics: AI & Critical Minerals 2025', url: 'https://fpanalytics.foreignpolicy.com/2025/07/18/artificial-intelligence-critical-minerals-supply-chains/', desc: 'Source for gallium +85% and germanium +37% demand by 2033. China: 98% gallium, 60% germanium refining, ~70% REE production, ~90% REE processing, 80% tungsten, 85% magnesium. A 30% gallium disruption = ~$600B US GDP impact. Gallium prices outside China doubled within 5 months of late 2024 export restrictions. Comprehensive export ban could cost $3.4B in US GDP.' },
 ];
 
 const SOURCES_MARKET = [
-  { name: 'Yahoo Finance (yahoo-finance2)', url: 'https://finance.yahoo.com', desc: 'Live equity prices for mining stocks, ETFs, hyperscalers, and commodity futures (GC=F, SI=F, HG=F, PA=F, PL=F, ALI=F)' },
-  { name: 'Frankfurter / ECB', url: 'https://www.frankfurter.app', desc: 'Live forex rates — AUD/USD, USD/ZAR via European Central Bank data' },
-  { name: 'open.er-api.com', url: 'https://www.exchangerate-api.com', desc: 'Live forex rates — USD/CLP, USD/PEN (emerging market pairs)' },
-  { name: 'LME (London Metal Exchange)', url: 'https://lme.com', desc: 'Nickel and tin reference settlement prices' },
-  { name: 'COMEX / CME Group', url: 'https://cmegroup.com', desc: 'Gold, silver, palladium, platinum, copper futures — accessed via Yahoo Finance' },
+  { name: 'Yahoo Finance (yahoo-finance2)', url: 'https://finance.yahoo.com', desc: 'Live equity prices for mining stocks, ETFs, hyperscalers, and commodity futures (GC=F, SI=F, HG=F, PA=F, PL=F, ALI=F). Server-side API routes — no key required.' },
+  { name: 'Frankfurter / ECB', url: 'https://www.frankfurter.app', desc: 'Live forex rates — AUD/USD, USD/ZAR via European Central Bank reference data. Refreshed every 5 minutes.' },
+  { name: 'open.er-api.com', url: 'https://www.exchangerate-api.com', desc: 'Live forex rates — USD/CLP, USD/PEN (emerging market currency pairs not covered by ECB).' },
+  { name: 'LME (London Metal Exchange)', url: 'https://www.lme.com/metals', desc: 'Nickel and tin reference settlement prices. These metals lack reliable Yahoo Finance futures symbols and are priced via LME daily settlements.' },
+  { name: 'Asian Metal / Shanghai Metals Market', url: 'https://www.asianmetal.com', desc: 'Reference prices for specialty OTC metals: gallium, germanium, neodymium, dysprosium, tantalum. These metals do not trade on public exchanges — prices are weekly trade publication settlements.' },
+  { name: 'S&P Global Copper & Gold Outlook Q2 2026', url: 'https://www.spglobal.com/market-intelligence/en/news-insights/research/2026/04/copper-gold-market-outlook-2026-prices-supply-mining-costs', desc: 'Most recent S&P Global price outlook for copper and gold. Used for price trajectory context in the Price Outlook chart and thesis narrative.' },
 ];
 
 const SOURCES_METHODS = [
-  { label: 'Mineral intensity estimates', text: 'Per-MW mineral consumption figures sourced from WEF (2025) and USGS, cross-referenced with Microsoft Chicago facility disclosure (2,100t Cu / 80 MW). AI-optimized multipliers applied per facility type.' },
-  { label: 'China control %', text: 'Mining and refining figures from IEA, USGS, and FP Analytics (2025). Refining figures represent processed/refined output capacity, not raw mine output. Sources occasionally diverge; figures represent consensus midpoint.' },
-  { label: 'Price data', text: 'All prices are indicative reference figures for educational purposes. Precious metals in $/oz troy; base metals in $/metric tonne; specialty metals in $/kg. Sourced from public market data Q1 2026.' },
-  { label: 'Equity data', text: 'Market caps, prices, and 1Y changes are approximate reference figures. Always verify with live data before any investment decision. Not financial advice.' },
+  { label: 'Mineral intensity estimates', text: 'Per-MW mineral consumption figures from WEF "Minerals to Megawatts" (2025), cross-referenced with the Microsoft Chicago facility disclosure (2,100t Cu / 80 MW per WEF). Standard facilities use 60–65t/MW; AI-optimized facilities 75–85t/MW due to denser rack configurations and heavier cooling infrastructure. Calculator estimates are directional — actual figures vary by rack density, cooling type, and UPS configuration.' },
+  { label: 'China control %', text: 'Mining % from IEA Global Critical Minerals Outlook 2024 and USGS MCS 2025. Refining % from FP Analytics (2025) and IEA. Refining figures represent processed/refined output capacity, not raw mine output. S&P Global (2026) corroborates China at ~40% of global copper smelting and ~66% of copper concentrate imports. Sources occasionally diverge; figures represent consensus midpoint.' },
+  { label: 'Copper demand & deficit figures', text: 'S&P Global "Copper in the Age of AI" (Jan 2026): 10M metric ton deficit by 2040, demand surges 50% to 42M metric tons, production peaks at 33M metric tons in 2030. IEA (2024): existing mines cover ~70% of 2035 copper demand. Wood Mackenzie: corroborates near-term deficit. These are projected scenarios, not guaranteed outcomes. Note on mine development timeline: S&P Global cites 17 years average from discovery to production; IEA (via FP Analytics) cites 16 years. STRATUM uses 17yr as the more conservative and widely cited figure.' },
+  { label: 'Live price data', text: 'Precious and industrial metals via Yahoo Finance futures (GC=F, SI=F, HG=F, PA=F, PL=F, ALI=F). Nickel and tin via LME reference. Specialty metals (Ga, Ge, Nd, Dy, Co, Li, Ta, Fluorspar) are OTC-traded — no public exchange exists. Reference prices from Asian Metal / SMM, labeled REF on site.' },
+  { label: 'Equity & ETF data', text: 'Live prices and market caps via Yahoo Finance. 1Y changes are live from Yahoo Finance historical data. Junior miner data is reference only — these trade OTC or on TSX Venture and may have limited coverage. Not financial advice.' },
 ];
 
 // ─── NEW BUILD FUNCTIONS ──────────────────────────────────
