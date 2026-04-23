@@ -1,73 +1,51 @@
 import { NextResponse } from 'next/server'
 
-const API_KEY = process.env.EXCHANGE_RATE_API_KEY
-const BASE_URL = `https://v6.exchangerate-api.com/v6/${API_KEY}`
-
 const FX_PAIRS = [
   {
-    pair: 'AUD/USD',
-    base: 'AUD',
-    quote: 'USD',
-    commodity: 'Copper · Gold',
-    country: 'Australia',
+    pair: 'AUD/USD', from: 'AUD', to: 'USD',
+    commodity: 'Copper · Gold', country: 'Australia', bg: 'AUD',
     desc: "Australia is the world's 2nd largest copper exporter and top gold producer. AUD strengthens when copper and gold prices rise on AI demand.",
-    bg: 'AUD',
   },
   {
-    pair: 'USD/CLP',
-    base: 'USD',
-    quote: 'CLP',
-    commodity: 'Copper',
-    country: 'Chile',
+    pair: 'USD/CLP', from: 'USD', to: 'CLP',
+    commodity: 'Copper', country: 'Chile', bg: 'CLP',
     desc: "Chile produces ~27% of global copper. USD/CLP falls (CLP strengthens) as copper prices rise with AI data center demand.",
-    bg: 'CLP',
   },
   {
-    pair: 'USD/ZAR',
-    base: 'USD',
-    quote: 'ZAR',
-    commodity: 'Gold · Palladium · Platinum',
-    country: 'South Africa',
+    pair: 'USD/ZAR', from: 'USD', to: 'ZAR',
+    commodity: 'Gold · Palladium · Platinum', country: 'South Africa', bg: 'ZAR',
     desc: "South Africa dominates PGM supply (40% of palladium, ~70% of platinum) and is a top gold producer. ZAR sensitive to all three.",
-    bg: 'ZAR',
   },
   {
-    pair: 'USD/PEN',
-    base: 'USD',
-    quote: 'PEN',
-    commodity: 'Copper · Silver · Zinc',
-    country: 'Peru',
+    pair: 'USD/PEN', from: 'USD', to: 'PEN',
+    commodity: 'Copper · Silver · Zinc', country: 'Peru', bg: 'PEN',
     desc: "Peru is the world's 2nd largest silver producer and 3rd in copper. PEN correlates with both as AI demand hits silver and copper simultaneously.",
-    bg: 'PEN',
   },
 ]
 
 export async function GET() {
   try {
-    // Fetch USD base rates (covers all our pairs)
-    const res = await fetch(`${BASE_URL}/latest/USD`, {
-      next: { revalidate: 300 }, // cache 5 min
-    })
+    // Frankfurter is a free, no-auth-required ECB exchange rate API
+    const symbols = 'AUD,CLP,ZAR,PEN'
+    const res = await fetch(
+      `https://api.frankfurter.app/latest?from=USD&to=${symbols}`,
+      { next: { revalidate: 300 } }
+    )
 
-    if (!res.ok) throw new Error(`ExchangeRate-API error: ${res.status}`)
+    if (!res.ok) throw new Error(`Frankfurter error: ${res.status}`)
     const data = await res.json()
-
-    if (data.result !== 'success') throw new Error('ExchangeRate-API returned failure')
-
-    const rates = data.conversion_rates
+    const rates = data.rates // { AUD: x, CLP: x, ZAR: x, PEN: x }
 
     const pairs = FX_PAIRS.map(fx => {
       let rate: number
 
-      if (fx.base === 'USD') {
-        // USD/XXX — rate is direct
-        rate = rates[fx.quote]
+      if (fx.from === 'USD') {
+        rate = rates[fx.to]
       } else {
-        // XXX/USD — invert the USD/XXX rate
-        rate = 1 / rates[fx.base]
+        // AUD/USD = 1 / (USD/AUD rate)
+        rate = 1 / rates[fx.from]
       }
 
-      // Format the rate display
       const formatted = rate < 10
         ? rate.toFixed(4)
         : rate < 1000
@@ -78,7 +56,8 @@ export async function GET() {
         ...fx,
         rate: parseFloat(formatted),
         rateDisplay: formatted,
-        timestamp: data.time_last_update_unix * 1000,
+        chg: 0, // Frankfurter doesn't provide change %, keep at 0
+        timestamp: Date.now(),
         live: true,
       }
     })
@@ -88,13 +67,11 @@ export async function GET() {
       timestamp: Date.now(),
       data: pairs,
     }, {
-      headers: {
-        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
-      }
+      headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600' }
     })
 
   } catch (err) {
     console.error('Forex API error:', err)
-    return NextResponse.json({ success: false, error: 'Failed to fetch forex data' }, { status: 500 })
+    return NextResponse.json({ success: false, error: String(err) }, { status: 500 })
   }
 }
