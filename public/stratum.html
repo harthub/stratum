@@ -2095,7 +2095,7 @@ function buildFX() {
       <div class="fx-pair">${f.pair}</div>
       <div class="fx-commodity">${f.country} · ${f.commodity}</div>
       <div class="fx-rate ${f.up ? 'change-positive' : ''}">${f.rate}</div>
-      <div class="fx-change ${f.up ? 'change-positive' : 'change-negative'}">${f.chg} YTD</div>
+      <div class="live-badge" style="display:inline-flex;align-items:center;gap:4px;font-size:7px;letter-spacing:0.15em;color:var(--accent-green);margin-top:4px;">● LIVE</div>
       <div class="fx-desc">${f.desc}</div>
       <div class="fx-bg-text">${f.bg}</div>
     </div>
@@ -2838,15 +2838,16 @@ async function fetchLiveData() {
     if (eqJson.success && eqJson.data) {
       const { stocks } = eqJson.data;
       const META = {
-        FCX:  { name:'Freeport-McMoRan', minerals:'Copper, Gold, Molybdenum', relevance:'Largest publicly traded copper producer. Direct AI infrastructure play.', risk:'Medium', dot:'#b87333' },
-        MP:   { name:'MP Materials', minerals:'Rare Earths (Nd, Dy, Pr)', relevance:'Only US rare earth miner/processor. Neodymium for data center fans/motors.', risk:'High', dot:'#c060a0' },
-        LAC:  { name:'Lithium Americas', minerals:'Lithium', relevance:'Thacker Pass project — largest known US lithium deposit. UPS battery supply.', risk:'High', dot:'#a8c44c' },
-        PLL:  { name:'Piedmont Lithium', minerals:'Lithium', relevance:'Carolina lithium project. Domestic supply for battery backup systems.', risk:'Very High', dot:'#a8c44c' },
-        WPM:  { name:'Wheaton Precious', minerals:'Silver, Gold, Palladium', relevance:'Streaming model — royalty on silver/palladium feeding semiconductor supply chains.', risk:'Low-Med', dot:'#a8a8b0' },
-        SQM:  { name:'Sociedad Quimica', minerals:'Lithium, Iodine, Nitrates', relevance:"World's largest lithium producer from Chile's Atacama.", risk:'Medium', dot:'#a8c44c' },
-        TECK: { name:'Teck Resources', minerals:'Copper, Zinc', relevance:'Major copper developer. QB2 expansion tied to AI copper demand.', risk:'Medium', dot:'#b87333' },
-        NEM:  { name:'Newmont Corp', minerals:'Gold, Silver, Copper', relevance:"World's largest gold miner. Gold demand from AI connector plating growing.", risk:'Low-Med', dot:'#c9a84c' },
-        UUUU: { name:'Energy Fuels', minerals:'Uranium, Rare Earths', relevance:'Uranium for AI data center nuclear power + rare earth recovery.', risk:'High', dot:'#c060a0' },
+        FCX:      { name:'Freeport-McMoRan', minerals:'Copper, Gold, Molybdenum', relevance:'Largest publicly traded copper producer. Direct AI infrastructure play.', risk:'Medium', dot:'#b87333' },
+        MP:       { name:'MP Materials', minerals:'Rare Earths (Nd, Dy, Pr)', relevance:'Only US rare earth miner/processor. Neodymium for data center fans/motors.', risk:'High', dot:'#c060a0' },
+        LAC:      { name:'Lithium Americas', minerals:'Lithium', relevance:'Thacker Pass project — largest known US lithium deposit. UPS battery supply.', risk:'High', dot:'#a8c44c' },
+        PLL:      { name:'Piedmont Lithium', minerals:'Lithium', relevance:'Carolina lithium project. Domestic supply for battery backup systems.', risk:'Very High', dot:'#a8c44c' },
+        'IVN.TO': { name:'Ivanhoe Mines', minerals:'Copper, Zinc, Platinum', relevance:"Kamoa-Kakula: one of world's highest-grade copper deposits. Major AI supply node.", risk:'Medium', dot:'#b87333' },
+        WPM:      { name:'Wheaton Precious', minerals:'Silver, Gold, Palladium', relevance:'Streaming model — royalty on silver/palladium feeding semiconductor supply chains.', risk:'Low-Med', dot:'#a8a8b0' },
+        SQM:      { name:'Sociedad Quimica', minerals:'Lithium, Iodine, Nitrates', relevance:"World's largest lithium producer from Chile's Atacama.", risk:'Medium', dot:'#a8c44c' },
+        TECK:     { name:'Teck Resources', minerals:'Copper, Zinc', relevance:'Major copper developer. QB2 expansion tied to AI copper demand.', risk:'Medium', dot:'#b87333' },
+        NEM:      { name:'Newmont Corp', minerals:'Gold, Silver, Copper', relevance:"World's largest gold miner. Gold demand from AI connector plating growing.", risk:'Low-Med', dot:'#c9a84c' },
+        UUUU:     { name:'Energy Fuels', minerals:'Uranium, Rare Earths', relevance:'Uranium for AI data center nuclear power + rare earth recovery.', risk:'High', dot:'#c060a0' },
       };
       if (stocks && stocks.length) {
         STOCKS = stocks.filter(s => s.price).map(s => {

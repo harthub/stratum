@@ -3,29 +3,26 @@ import YahooFinance from 'yahoo-finance2'
 
 const yf = new YahooFinance()
 
-// All Yahoo Finance futures return price per unit as listed on their exchange
-// GC=F  → $/troy oz  (multiply by 1)
-// SI=F  → cents/troy oz on COMEX (divide by 100 to get $/oz)  ← key fix
+// Yahoo Finance returns these units:
+// GC=F  → $/troy oz
+// SI=F  → $/troy oz (NOT cents — yahoo normalizes this)
 // PA=F  → $/troy oz
 // PL=F  → $/troy oz
-// HG=F  → cents/lb on COMEX → multiply by 22.0462 to get $/t
-// ALI=F → $/metric ton (directly, no conversion)
-// NI=F  → $/metric ton on LME (no conversion needed if available)
-// TIN=F → doesn't exist on Yahoo, use reference
+// HG=F  → $/lb → multiply by 2204.62 to get $/metric ton
+// ALI=F → $/metric ton
 
-const COMMODITY_SYMBOLS = {
-  gold:      { sym: 'GC=F', name: 'Gold',      unit: '/oz', category: 'precious',   transform: (p: number) => p },
-  silver:    { sym: 'SI=F', name: 'Silver',    unit: '/oz', category: 'precious',   transform: (p: number) => p / 100 }, // COMEX SI is cents/oz
-  palladium: { sym: 'PA=F', name: 'Palladium', unit: '/oz', category: 'precious',   transform: (p: number) => p },
-  platinum:  { sym: 'PL=F', name: 'Platinum',  unit: '/oz', category: 'precious',   transform: (p: number) => p },
-  copper:    { sym: 'HG=F', name: 'Copper',    unit: '/t',  category: 'industrial', transform: (p: number) => Math.round(p * 22.0462) }, // cents/lb → $/t
-  aluminum:  { sym: 'ALI=F',name: 'Aluminum',  unit: '/t',  category: 'industrial', transform: (p: number) => Math.round(p) }, // already $/t
+const COMMODITY_SYMBOLS: Record<string, { sym: string; name: string; unit: string; category: string; transform: (p: number) => number }> = {
+  gold:      { sym: 'GC=F',  name: 'Gold',      unit: '/oz', category: 'precious',   transform: (p) => p },
+  silver:    { sym: 'SI=F',  name: 'Silver',    unit: '/oz', category: 'precious',   transform: (p) => p },
+  palladium: { sym: 'PA=F',  name: 'Palladium', unit: '/oz', category: 'precious',   transform: (p) => p },
+  platinum:  { sym: 'PL=F',  name: 'Platinum',  unit: '/oz', category: 'precious',   transform: (p) => p },
+  copper:    { sym: 'HG=F',  name: 'Copper',    unit: '/t',  category: 'industrial', transform: (p) => Math.round(p * 2204.62) },
+  aluminum:  { sym: 'ALI=F', name: 'Aluminum',  unit: '/t',  category: 'industrial', transform: (p) => Math.round(p) },
 }
 
-// These don't have reliable Yahoo Finance futures — use LME reference prices
 const REFERENCE_INDUSTRIAL = [
-  { name: 'Nickel', sym: 'NI', unit: '/t',  price: 16800, chg: -4.2,  category: 'industrial', note: 'Ref: LME Settlement' },
-  { name: 'Tin',    sym: 'SN', unit: '/t',  price: 31200, chg: 14.7,  category: 'industrial', note: 'Ref: LME Settlement' },
+  { name: 'Nickel', sym: 'NI', unit: '/t', price: 16800, chg: -4.2, category: 'industrial', note: 'Ref: LME Settlement' },
+  { name: 'Tin',    sym: 'SN', unit: '/t', price: 31200, chg: 14.7, category: 'industrial', note: 'Ref: LME Settlement' },
 ]
 
 const SPECIALTY_REFERENCE = [
@@ -49,7 +46,6 @@ function formatPrice(price: number, unit: string): string {
 export async function GET() {
   try {
     const entries = Object.entries(COMMODITY_SYMBOLS)
-
     const quotes = await Promise.allSettled(
       entries.map(([, meta]) => yf.quote(meta.sym))
     )
@@ -75,14 +71,9 @@ export async function GET() {
           live: true,
         }
       }
-      return {
-        key, name: meta.name, sym: meta.sym,
-        price: null, unit: meta.unit, chg: null,
-        category: meta.category, live: false,
-      }
+      return { key, name: meta.name, sym: meta.sym, price: null, unit: meta.unit, chg: null, category: meta.category, live: false }
     })
 
-    // Merge live + reference industrial
     const allIndustrial = [
       ...live.filter(m => m.category === 'industrial'),
       ...REFERENCE_INDUSTRIAL.map(m => ({ ...m, live: false, key: m.sym.toLowerCase() })),
@@ -105,7 +96,7 @@ export async function GET() {
   } catch (err) {
     console.error('Metals API error:', err)
     return NextResponse.json({
-      success: true, // still return 200 with reference data so UI doesn't break
+      success: true,
       timestamp: Date.now(),
       data: { live: [], specialty: SPECIALTY_REFERENCE }
     })
